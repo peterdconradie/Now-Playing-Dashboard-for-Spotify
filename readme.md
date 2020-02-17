@@ -7,8 +7,7 @@ This is dashboard for Spotify that fetches data from Spotify, https://api.lyrics
 
 Last release : 0.1
 
-
-
+![Screenshot](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/screenshot.png?)
 
 ## **Changelog**
 
@@ -44,7 +43,7 @@ php -S localhost:3000 -t /Users/{YOUR USERNAME}/Now-Playing-Dashboard-for-Spotif
 Following this, you can access it at: http://localhost:3000/
 
 ## **What modifications are required ?**
-As originally instructed by [busybox11](https://github.com/busybox11/NowPlaying-for-Spotify), to complete setup for your local machine, you need `Client ID` a `Client Secret` and a domain `Domain`.
+As originally instructed by [busybox11](https://github.com/busybox11/NowPlaying-for-Spotify), to complete setup for your local machine, you need a `Client ID` a `Client Secret` and a domain `Domain`.
 
 *How to do it :*
 As I said, the first thing is to create a Client ID (`Create a Client ID` button) on [Spotify's developer dashboard](https://developer.spotify.com/dashboard/applications).
@@ -61,4 +60,4 @@ Edit those values :
 Let's go back on our app's panel. You need to declare the URL where the `token.php` page is located, for a local hosting it would be in most cases `http://localhost/token.php`. Click on the green `Edit settings` button situated on the top of the page, then in the `Redirect URIs` text field, indicate yours. ***ATTENTION*** : what you typed should **IMPERATIVELY** be the same as what you wrote in the two precedent files ! Then click on the `SAVE` button on the very bottom of the form. Your app is declared and ready to use !
 
 ## **Credits**
-The base for this webapplication was provided by [busybox11](https://github.com/busybox11/NowPlaying-for-Spotify) and it uses the [Spotify Web API PHP by jwilsson](https://github.com/jwilsson/spotify-web-api-php) and [Spotify Web API JS by JMPerez](https://github.com/jmperez/spotify-web-api-js).
+The base for this web application was provided by [busybox11](https://github.com/busybox11/NowPlaying-for-Spotify) and it uses the [Spotify Web API PHP by jwilsson](https://github.com/jwilsson/spotify-web-api-php) and [Spotify Web API JS by JMPerez](https://github.com/jmperez/spotify-web-api-js).

@@ -1,7 +1,7 @@
 
 # Now Playing Dashboard for Spotify
 
- **About** !
+ **About**
 
 This is dashboard for Spotify that fetches data from Spotify, https://api.lyrics.ovh/, Wikipedia and MusicBrainz about what you are currently listening to.
 

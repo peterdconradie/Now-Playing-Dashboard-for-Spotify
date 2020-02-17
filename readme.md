@@ -3,12 +3,15 @@
 
  **Now Playing Dashboard for Spotify** !
 
-This is dashboard for Spotify that fetches data from Spotify, https://api.lyrics.ovh/, Wikipedia and MusicBrainz about what you are currently listening to. 
+This is dashboard for Spotify that fetches data from Spotify, https://api.lyrics.ovh/, Wikipedia and MusicBrainz about what you are currently listening to.
+
+
+![Screenshot](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/blob/master/screenshot.png)
 
 Last release : 0.1
 ## **Known Issues**
 - Wikipedia search sometimes results in the same text for both albums and artists. This happens with lesser known artists.
-- Musicbrainz doesn't always have a wikidata identifier assiciated with an artist, in which case the artist info box does not get populated. 
+- Musicbrainz doesn't always have a wikidata identifier associated with an artist, in which case the artist info box does not get populated. 
 
 
 ## **Changelog**

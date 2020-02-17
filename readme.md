@@ -7,7 +7,7 @@ This is dashboard for Spotify that fetches data from Spotify, https://api.lyrics
 
 Last release : 0.1
 
-![Screenshot](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/screenshot.png?)
+![Screenshot](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/blob/master/screenshot.png?)
 
 ## **Changelog**
 

@@ -11,7 +11,7 @@ $options = [
     'scope' => [
         'user-read-currently-playing',
         'user-read-playback-state',
-        'streaming'
+		'user-modify-playback-state',
     ],
 ];
 

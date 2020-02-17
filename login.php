@@ -9,9 +9,10 @@ $session = new SpotifyWebAPI\Session(
 
 $options = [
     'scope' => [
-        'user-read-currently-playing',
-        'user-read-playback-state',
-        'streaming'
+      'user-read-currently-playing',
+      'user-read-playback-state',
+		  'user-modify-playback-state',
+      'streaming'
     ],
 ];
 

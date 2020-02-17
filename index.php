@@ -37,8 +37,8 @@ if(isset($_GET['lang'])){
             <h3>Credits</h3>
             <p>This is an opensource project. Is is derived for the most part on <a href="https://github.com/busybox11/NowPlaying-for-Spotify">busybox11's NowPlaying for Spotify</a>,
            which also relies on the <a href="https://github.com/JMPerez/spotify-web-api-js">spotify-web-api-js</a> by José M. Pérez. The code can be accessed on <a href="https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/">GitHub</a></p>
-
-      </div>
+            <p>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+      </div></p>
 
       <div id="right-side"></div>
 

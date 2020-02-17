@@ -1,10 +1,10 @@
-﻿<?php
+<?php
 require 'vendor/autoload.php';
 
 $session = new SpotifyWebAPI\Session(
-    'YOUR_CLIENT_ID',
-    'YOUR_CLIENT_SECRET',
-    'YOUR_DOMAIN/token.php'
+    '2fbf07d1a88946c989897fe4bcdc749b',
+    'dd57c3a56ea4425a9d4fbd54e5635c44',
+    'http://localhost:3000/token.php'
 );
 
 if (!isset($_GET['action'])) {

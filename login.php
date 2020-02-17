@@ -2,16 +2,16 @@
 require_once 'vendor/autoload.php';
 
 $session = new SpotifyWebAPI\Session(
-    'YOUR_CLIENT_ID',
-    'YOUR_CLIENT_SECRET',
-    'YOUR_DOMAIN/token.php'
+    '',
+    '',
+    'http://localhost:3000/token.php'
 );
 
 $options = [
     'scope' => [
         'user-read-currently-playing',
         'user-read-playback-state',
-        'streaming'
+		'user-modify-playback-state',
     ],
 ];
 

@@ -1,0 +1,254 @@
+html, body {
+  height: 99%;
+  background-color: #131313;
+  padding-top: 0px;
+  margin-top: 0px;
+  margin-left: 0px;
+  overflow: hidden;
+  font-family: 'Fira+Sans', sans-serif;
+}
+
+/* accent colors 1DB954 */
+/* Header /  colors   FFFFFF */
+/* Text colors  b6b6c0 */
+/* background color 131313
+/* Footer color 1a1a1a*/
+h1, h2, h3, h4 {
+  color: #FFFFFF;
+  font-weight: 100;
+}
+
+h1 {
+  font-size: 40px;
+  margin: 0px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin-bottom: 5px;
+  margin-top: 0px;
+  font-size: 24px;
+  border-top: 1px solid #1DB954;
+  padding-top: 5px;
+}
+
+h3 {
+  margin-top: 12px;
+  font-size: 18px;
+  margin-bottom: 0px;
+}
+
+h4 {
+  font-size: 16px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+a:link {
+  color: #b6b6c0;
+}
+
+a:visited {
+  color: #b6b6c0;
+}
+
+/* mouse over link */
+a:hover {
+  color: #1DB954;
+}
+
+/* selected link */
+a:active {
+  color: #b6b6c0;
+}
+
+p {
+  margin-top: 0px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #b6b6c0;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5em;
+  font-weight: 300;
+}
+
+.material-icons {
+  display: inline-flex;
+  vertical-align: top;
+  color: #b6b6c0;
+  margin-top: 3px;
+}
+
+#active.material-icons {
+  border-bottom: 2px solid #1DB954;
+}
+
+#artist-image {}
+
+#song-info-div {}
+
+#playing-img {
+  width: 100%;
+}
+
+#album-image {
+  float: left;
+  overflow: hidden;
+  border-top: 1px solid #1DB954;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+#artist-image {
+  float: left;
+  overflow: hidden;
+  border-top: 1px solid #1DB954;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+#track_icon {
+  color: #b6b6c0;
+}
+
+#album_icon {
+  color: #b6b6c0;
+}
+
+#artist_icon {
+  color: #b6b6c0;
+  font-size: 40px;
+}
+
+#all_content {
+  height: 100%;
+  width: 100%;
+  margin-left: 0px;
+  overflow: hidden;
+}
+
+#playing-div {
+  width: 100%;
+  height: 99%;
+  overflow: auto;
+  margin-left: 10px;
+  margin-top: 7px;
+  padding-right: 15px;
+  /* exact value is given in JavaScript code */
+}
+
+.settings-icons {
+  font-size: 20px;
+}
+
+#seekbar-bg {
+  float: left;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  height: 0px;
+  width: 100%;
+}
+
+#seekbar-now {
+  background-color: #1DB954;
+  height: 1px;
+}
+
+#playback-info {
+  float: left;
+  padding-top: 0px;
+  width: 100%;
+}
+
+#left-side {
+  float: left;
+  width: 25%;
+  height: 100vh;
+
+}
+#contributionsTemplate{
+padding-bottom: 50px;
+}
+#main {
+  float: left;
+  width: 47%;
+  margin-left: 20px;
+  padding-bottom: 50px;
+}
+
+#right-side {
+  float: right;
+  width: 25%;
+  margin-left: 20px;
+  margin-right: 0px;
+  padding-bottom: 50px;
+}
+
+#left-side p {
+  display: inline;
+  font-size: 12px;
+  padding-left: 1px;
+}
+
+#left-side h4 {
+  font-size: 12px;
+  padding-left: 0px;
+  margin-bottom: 0px;
+}
+
+#progress {
+  margin-top: 0px;
+}
+
+#song-lyrics {
+  display: block;
+  font-size: 12px;
+  line-height: 1.3em;
+  padding-bottom: 100px;
+}
+
+#footer {
+  box-shadow: inset 0 0 2px;
+  background-color: #1a1a1a;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+
+span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+#footer p {
+  display: inline-block;
+  padding-left: 10px;
+  padding-top: 5px;
+}
+
+tr td {
+  font-size: 10px;
+  color: #b6b6c0;
+  padding-left: 0px;
+  margin-left: 0px;
+  border-spacing: 0px;
+}
+
+thead {
+  text-align:left;
+  font-size: 10px;
+  color: #b6b6c0;}
+
+#about{
+position:absolute;
+z-index:100;
+left:50%;
+top:80%;
+background-color: inherit;
+box-shadow: inset 0 0 2px;
+padding:10px;
+}

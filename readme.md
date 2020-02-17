@@ -9,24 +9,16 @@ Website : [nowplayingforspotify.ga](http://nowplayingforspotify.ga)
 
 Personal Discord account : `@busybox#2540`
 
-French tech Discord server : [https://techcord.me/invite](https://techcord.me/invite)
+French tech Discord server : [https://discord.io/techcordfr](https://discord.io/techcordfr)
 
-Latest release : 1.5.2
+Last release : 1.4.3
 
 ## **Changelog**
-
-v1.5.X
-- Added playback support (Premium account should be needed)
-- Added playback information
-- Added pause button (#17)
-- CSS improvements added for better responsive (#15 #16)
-- SEO improvements (#16)
-- Minor CSS improvements
 
 v1.4.X
 - Advertisements are recognized
 - Multiple artists are recognized
-- Experimental theme switcher
+- Experimental theme / teme switcher
 
 v1.3.X
 - Now playing device name and type is showing
@@ -54,7 +46,7 @@ HTML, CSS, JS, PHP
 
 ## **How to host ?**
 
-You can use XAMPP (multi-platform) or Wampserver (Windows only) but any webserver with PHP 7.0 or greater is good to use.
+You can use XAMPP (multi-plateform) or Wampserver (Windows only) but any webserver with PHP 7.0 or greater is good to use.
 
 ## **What modifications are required ?**
 

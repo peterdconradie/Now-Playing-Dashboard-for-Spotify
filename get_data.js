@@ -297,6 +297,7 @@ function loopForever() {
           var curTrackInteger = (parseInt(curTrack, 10) - 1);
           var totalTracksInteger = (parseInt(totalTracks, 10))
 
+
           getMBartistID(albumArtistURI)
           .then(mbArtistID =>{
             var url= `http://musicbrainz.org/ws/2/release-group/?query=release:${cleanAlbumURI}+AND+arid:${mbArtistID}+AND+primarytype:${release_type}+AND+status:official&inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json`
@@ -305,12 +306,12 @@ function loopForever() {
             //console.log("release group data found")
             return response.json();
           }).then(releaseData => {
-            //console.log(releaseData);
+            console.log(releaseData);
             releaseGroups = releaseData["release-groups"][0].releases
             releaseGroupID = releaseData["release-groups"][0].id
             var releaseGroupIDurl = "https://musicbrainz.org/release-group/" + releaseGroupID;
             document.getElementById("rg_id").href = releaseGroupIDurl;
-            //console.log(releaseGroups);
+            //console.log(getElementById);
             var filtered = releaseGroups.filter(a => a.status == "Official");
             //console.log(filtered);
             var releaseID = filtered[0].id

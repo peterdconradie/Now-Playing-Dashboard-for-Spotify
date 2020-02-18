@@ -82,7 +82,7 @@ switch ($_COOKIE['lang'])
       <h3 id="song-album"></h3>
       <h4>Album information</h4>
       <p id="albumInfo">No album info found</p>
-      <p><a id="rg_id" href="https://musicbrainz.org/" target="_blank">View album info on MusicBrainz</a></p>
+      <p><a id="rg_id" href="https://musicbrainz.org/" target="_blank">See album info on MusicBrainz</a></p>
       <h4>Artist information</h4>
       <p id="artistInfo">No artist info found</p>
     </div>

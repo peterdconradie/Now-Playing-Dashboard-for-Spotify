@@ -37,37 +37,74 @@ loopForever();
 // loop function
 function loopForever() {
 
+  //
+  //
+  // F U N C T I O N S
+  //
+  //
 
 
+  // this function cleans titles, used for searching musicbrainz
+   function cleanTitles(toFix) {
+     var titleFixed = toFix.replace(/\(Deluxe(.*)/g, '')
+       .replace(/&/g, 'and')
+       .replace(/\-.*/g, '')
+       .replace(/\[.*/g, '')
+       .replace(/\(.*/g, '');
+     return titleFixed;
+   }
 
-  //// this is the function to get a wikipedia article  based on a wikidata identifier
-  async function getWikiPage(wikiDataInfo,contentdiv) {
+  // This gets the album artist ID from musicbrainz
+  async function getMBartistID(albumArtistURI) {
+    var url = `http://musicbrainz.org/ws/2/artist/?&fmt=json&limit=1&query=artist:${albumArtistURI}`;
+    let response = await fetch(url);
+    let data = await response.json()
+    let mbArtistID = data["artists"][0].id
+    return mbArtistID
+  }
+
+  // This uses the Musicbrainz artist ID to search for a wikidata identifier
+  async function getMBwikiDataCode(mbArtistID) {
+    var url = `https://musicbrainz.org/ws/2/artist/${mbArtistID}?fmt=json&inc=url-rels`
+    let response = await fetch(url);
+    let data = await response.json()
+    var subset = data.relations;
+    var filtered = subset.filter(a => a.type == "wikidata");
+    console.log(filtered)
+    if (filtered.length == 0) {
+      console.log("No wikidata resource found");
+      // search wikipedia
+    } else {
+      console.log("Wikidata resource found");
+      var artistWikiDataURL = filtered[0]["url"]["resource"]
+      var artistWikiDataURLFixed = artistWikiDataURL.replace('https:\/\/www.wikidata.org\/wiki\/', '');
+      console.log(artistWikiDataURLFixed);
+      return (artistWikiDataURLFixed)
+    }
+  }
+
+  // This gets a page title for for the associated wikidata identifier
+  async function getWikiTitle(wikiDataInfo) {
     let response = await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=sitelinks&ids=${wikiDataInfo}&sitefilter=enwiki&origin=*`);
     let data = await response.json()
     let title = data["entities"][wikiDataInfo]["sitelinks"]["enwiki"]["title"]
     titleEncode = encodeURIComponent(title)
-    var url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${titleEncode}&origin=*`
-    fetch(url).then(response => { // fetch 1
-      return response.json();
-    }).then(data => {
-      pageID = Object.keys(data.query.pages);
-      pageID = pageID["0"]
-      var myJSON = JSON.stringify(data["query"]["pages"][pageID]["extract"])
-      var myJSONparsed = JSON.parse(myJSON)
-      document.getElementById(contentdiv).innerHTML = myJSONparsed;
-    }).
-    catch(err => {
-      //console.error(err);
-    });
-  }// function ends here
- // this function cleans titles, used for searching musicbrainz
-  function cleanTitles(toFix) {
-    var titleFixed = toFix.replace(/\(Deluxe(.*)/g, '')
-      .replace(/&/g, 'and')
-      .replace(/\-.*/g, '')
-      .replace(/\[.*/g, '')
-      .replace(/\(.*/g, '');
-    return titleFixed;
+    return titleEncode
+  }
+
+  // When given the exact page title, this function fetches an extract of the page
+  async function wikiAsyncFetch(pageName) {
+    var url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${pageName}&origin=*`
+    let response = await fetch(url);
+    // only proceed once promise is resolved
+    let data = await response.json();
+    // only proceed once second promise is resolved
+    pageID = Object.keys(data.query.pages);
+    pageID = pageID["0"]
+    var myJSON = JSON.stringify(data["query"]["pages"][pageID]["extract"])
+    var myJSONparsed = JSON.parse(myJSON)
+    console.log(myJSONparsed)
+    return myJSONparsed;
   }
 
   setInterval(function() {
@@ -110,7 +147,6 @@ function loopForever() {
       noInformations();
     }
 
-
     function getArtistInformations() {
       //console.log("something breaks here");
       // the information below is not yet available at first run
@@ -138,7 +174,6 @@ function loopForever() {
         $('#artistscore').html(items.join('\n'));
       }
 
-
       // list of content
       $('#artist-image').attr("src", artistImage);
       $('#artist-popularity').text(artistPopularity);
@@ -155,9 +190,6 @@ function loopForever() {
 
       }
       $('#artist-genres').html(genres.join(" | "));
-
-
-
       //$('#artist-genre').text(artistGenre);
     }
 
@@ -181,8 +213,6 @@ function loopForever() {
         //alert("stopped");
       }
 
-
-
       if (response.shuffle_state == true) {
         $(".shuffleOn").hide();
         $(".shuffleOff").show();
@@ -191,7 +221,6 @@ function loopForever() {
         $(".shuffleOff").hide();
         //alert("stopped");
       }
-
 
       if (response.repeat_state == "context") {
         $(".repeatOn").hide();
@@ -229,7 +258,6 @@ function loopForever() {
           //console.log("not explicit");
         }
 
-
         ////console.log("This is the search result froom spotify "+ albumArtistData);
         albumArtist = response["item"]["artists"]["0"].name;
         releaseDate = response["item"]["album"].release_date;
@@ -245,7 +273,6 @@ function loopForever() {
         $("#time-song").text(progressSongFormatted + " · " + lenghtSongFormatted);
         //console.log("Track popularity " + trackPopularity);
         //console.log("This is the album artist: " + albumArtist);
-
         // sub loop when songs change
         // this ensures that the wikipedia fetch only happens when a song changes
         if ($("#song-title").text() == "<?=defaultTitleSong; ?>" || response["item"].id != idSong) {
@@ -253,23 +280,24 @@ function loopForever() {
           // prepare strings and titles
           albumArtistURI = encodeURI(albumArtist);
           cleanAlbum = cleanTitles(albumSong);
-
           cleanAlbumURI = encodeURI(cleanAlbum);
-
           cleanTitleSong = cleanTitles(titleSong);
           cleanTitleSongURI = encodeURI(cleanTitleSong);
 
+          //getMBartistID(albumArtistURI)
+
+
           //console.log("Song title should be " + titleSong)
           //console.log("Song clean should" + cleanTitleSong)
-
-
           //console.log("Song changed: " + titleSong + " by " + albumArtist + " on the album " + albumSong)
           //console.log("Song cleaned: " + cleanTitleSong + " by " + albumArtist + " on the album " + cleanAlbum);
 
-
-
           var curTrackInteger = (parseInt(curTrack, 10) - 1);
           var totalTracksInteger = (parseInt(totalTracks, 10))
+
+            getMBartistID(albumArtistURI)
+           .then(mbArtistID => console.log(mbArtistID))
+
           //console.log(curTrackInteger + " (integer) vs  (original)" + curTrack);
           var mbURL1 = `http://musicbrainz.org/ws/2/artist/?&fmt=json&limit=1&query=artist:${albumArtistURI}`;
           fetch(mbURL1).then(response => { // fetch 1
@@ -289,10 +317,8 @@ function loopForever() {
             releaseGroups = releaseData["release-groups"][0].releases
             releaseGroupID = releaseData["release-groups"][0].id
 
-
             var releaseGroupIDurl = "https://musicbrainz.org/release-group/" + releaseGroupID;
             document.getElementById("rg_id").href = releaseGroupIDurl;
-
 
             //console.log(releaseGroups);
             var filtered = releaseGroups.filter(a => a.status == "Official");
@@ -306,18 +332,14 @@ function loopForever() {
             console.log(releaseData);
             credits_all = releaseData["media"][0]["tracks"]
             credits_track = releaseData["media"][0]["tracks"][curTrackInteger]["recording"].relations
-
             //console.log(credits_track);
 
             if (credits_track.length == 0) {
               const tmpl = () => ``;
               contributionsTemplate.innerHTML = tmpl();
-
             }
             else {
               //console.log("credits")
-
-
               var i = 1;
               var creditName;
               var creditNames = [];
@@ -364,11 +386,13 @@ function loopForever() {
             //console.error(err);
           });
 
-
-
-
-
-
+          // this whole chain first fetches an artistID, checks for wikidatacode, gets the title from the wikidata code and then grabs the extract
+          getMBartistID(albumArtistURI)
+            .then(mbArtistID => getMBwikiDataCode(mbArtistID)
+              .then(artistWikiDataURLFixed => getWikiTitle(artistWikiDataURLFixed))
+              .then(titleEncode => wikiAsyncFetch(titleEncode)
+                .then(myJSONparsed => document.getElementById("artistInfo").innerHTML = myJSONparsed))
+            )
 
           trackPopularityIcon = Math.ceil(trackPopularity / 20);
           // this checks is the popularity is higher than 0. if it is zero, one star gets added, if not, the else loop is run
@@ -387,9 +411,6 @@ function loopForever() {
             }
             $('#score').html(items.join('\n'));
           }
-
-
-
 
           // some search string replacements  - not complete or comprehensive
           var albumFixed = albumSong.replace(/\(Deluxe(.*)/g, '')
@@ -447,44 +468,10 @@ function loopForever() {
                   return e;
                   //console.log("noAlbumInfo");
                   var noAlbumInfo = ("Server overloaded OR no information found");
-
                   $("#albumInfo").text(noAlbumInfo);
                 });
 
             }); // title search wiki ends here
-
-
-
-
-
-            /// this gets the identifier and uses the function to populate a the getWikiPage function to full it
-            var mbURL1 = `http://musicbrainz.org/ws/2/artist/?&fmt=json&limit=1&query=artist:${albumArtistURI}`;
-            fetch(mbURL1).then(response => { // fetch 1
-                return response.json();
-              }).then(data => {
-                //console.log(data);
-                //this just gets the artist id from the artist search string
-                var mbArtistID = data["artists"][0].id
-                mbURL2 = `https://musicbrainz.org/ws/2/artist/${mbArtistID}?fmt=json&inc=url-rels`
-                return fetch(mbURL2) // fetch 2
-              }).then(response => {
-                return response.json();
-              }).then(artistData => {
-                var subset = artistData.relations;
-                var filtered = subset.filter(a => a.type == "wikidata");
-                //console.log(filtered);
-                var artistWikiDataURL = filtered[0]["url"]["resource"]
-                //console.log(artistWikiDataURL)
-                var artistWikiDataURLFixed = artistWikiDataURL.replace('https:\/\/www.wikidata.org\/wiki\/', '');
-                //console.log(artistWikiDataURLFixed);
-                getWikiPage(artistWikiDataURLFixed,"artistInfo")
-              })
-                .catch(err => {
-                //console.error(err);
-              });
-
-
-
 
           // lyrics block
           var lyricsArtist = encodeURI(albumArtist);
@@ -547,10 +534,6 @@ function loopForever() {
     } // if info can't be found, this function is invoked
 
 
-
-
-
-
     // this prepares the data from above for the divs . html
     if ($("#song-title").text() == "<?=defaultTitleSong; ?>" || response["item"].id != idSong) {
       $("#song-title").text(titleSong);
@@ -562,7 +545,6 @@ function loopForever() {
       $("#total-album-tracks").text(totalTracks);
       $("#cur-album-track").text(curTrack);
       $('#cur-vol').text(curVol);
-
 
       document.title = title;
       $("#album-image").attr("src", albumPicture);
@@ -577,10 +559,6 @@ function loopForever() {
       var allmusic_album = "https://www.allmusic.com/search/albums/" + albumSong;
       var lastfm_album = "https://www.last.fm/search/albums?q=" + albumSong;
 
-
-
-
-
       document.getElementById("aoty").href = aoty;
       document.getElementById("allmusic").href = allmusic;
       document.getElementById("lastfm").href = lastfm;
@@ -589,8 +567,8 @@ function loopForever() {
       document.getElementById("allmusic_album").href = allmusic_album;
       document.getElementById("lastfm_album").href = lastfm_album;
 
-      /////*[@id="centerContent"]/div[1]/div[4]/div[1]/div[2]/span
 
+      /// playback section
 
       function Pause() {
         spotifyApi.pause();
@@ -631,7 +609,6 @@ function loopForever() {
       function setShufflOff() {
         spotifyApi.setShuffle("false");
       }
-
       $("#pause").on("click", function() {
         Pause();
       });
@@ -669,6 +646,4 @@ function loopForever() {
       });
     }
   }, 1000);
-
-
 } // loop function ends here

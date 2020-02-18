@@ -27,7 +27,7 @@ let mbArtistID;
 //let mbArtistID;
 
 
-const AVAILABLE_DEVICES = ['Computer', 'Tablet', 'Smartphone', 'Speaker', 'TV', 'AVR', 'STB', 'AudioDongle', 'Game//console', 'CastVideo', 'CastAudio', 'Automobile', 'Unknown']
+const AVAILABLE_DEVICES = ['Computer', 'Tablet', 'Smartphone', 'Speaker', 'TV', 'AVR', 'STB', 'AudioDongle', 'Gameconsole', 'CastVideo', 'CastAudio', 'Automobile', 'Unknown']
 const DEVICES_ICON = ['computer', 'tablet_android', 'smartphone', 'speaker', 'tv', 'speaker_group', 'speaker_group', 'cast_connected', 'gamepad', 'cast_connected', 'cast_connected', 'directions_car', 'device_unknown']
 refreshTime = readCookie('refreshTime');
 var spotifyApi = new SpotifyWebApi();
@@ -37,13 +37,11 @@ loopForever();
 // loop function
 function loopForever() {
 
-  //
-  //
-  // F U N C T I O N S
-  //
-  //
-
-
+//
+//
+// F U N C T I O N S
+//
+//
   // this function cleans titles, used for searching musicbrainz
    function cleanTitles(toFix) {
      var titleFixed = toFix.replace(/\(Deluxe(.*)/g, '')
@@ -56,10 +54,13 @@ function loopForever() {
 
   // This gets the album artist ID from musicbrainz
   async function getMBartistID(albumArtistURI) {
-    var url = `http://musicbrainz.org/ws/2/artist/?&fmt=json&limit=1&query=artist:${albumArtistURI}`;
+    //console.log(albumArtistURI)
+    var url = `http://musicbrainz.org/ws/2/artist/?&fmt=json&limit=1&query=artist:"${albumArtistURI}"`;
+    //console.log(url)
     let response = await fetch(url);
     let data = await response.json()
     let mbArtistID = data["artists"][0].id
+    //console.log(mbArtistID)
     return mbArtistID
   }
 
@@ -70,15 +71,15 @@ function loopForever() {
     let data = await response.json()
     var subset = data.relations;
     var filtered = subset.filter(a => a.type == "wikidata");
-    console.log(filtered)
+    //console.log(filtered)
     if (filtered.length == 0) {
-      console.log("No wikidata resource found");
+      //console.log("No wikidata resource found");
       // search wikipedia
     } else {
-      console.log("Wikidata resource found");
+      //console.log("Wikidata resource found");
       var artistWikiDataURL = filtered[0]["url"]["resource"]
       var artistWikiDataURLFixed = artistWikiDataURL.replace('https:\/\/www.wikidata.org\/wiki\/', '');
-      console.log(artistWikiDataURLFixed);
+      //console.log(artistWikiDataURLFixed);
       return (artistWikiDataURLFixed)
     }
   }
@@ -103,7 +104,7 @@ function loopForever() {
     pageID = pageID["0"]
     var myJSON = JSON.stringify(data["query"]["pages"][pageID]["extract"])
     var myJSONparsed = JSON.parse(myJSON)
-    console.log(myJSONparsed)
+    //console.log(myJSONparsed)
     return myJSONparsed;
   }
 
@@ -122,7 +123,7 @@ function loopForever() {
     }
     if (response != "") {
       // even uitgezet
-      ////console.log('Response not empty');
+      //console.log('Response not empty');
       getInformations();
     } else {
       //console.log('Response empty');
@@ -146,6 +147,7 @@ function loopForever() {
       //console.log('Response empty');
       noInformations();
     }
+
 
     function getArtistInformations() {
       //console.log("something breaks here");
@@ -258,7 +260,6 @@ function loopForever() {
           //console.log("not explicit");
         }
 
-        ////console.log("This is the search result froom spotify "+ albumArtistData);
         albumArtist = response["item"]["artists"]["0"].name;
         releaseDate = response["item"]["album"].release_date;
         totalTracks = response["item"]["album"].total_tracks;
@@ -278,7 +279,8 @@ function loopForever() {
         if ($("#song-title").text() == "<?=defaultTitleSong; ?>" || response["item"].id != idSong) {
 
           // prepare strings and titles
-          albumArtistURI = encodeURI(albumArtist);
+          albumArtistURI = encodeURIComponent(albumArtist);
+
           cleanAlbum = cleanTitles(albumSong);
           cleanAlbumURI = encodeURI(cleanAlbum);
           cleanTitleSong = cleanTitles(titleSong);
@@ -295,41 +297,29 @@ function loopForever() {
           var curTrackInteger = (parseInt(curTrack, 10) - 1);
           var totalTracksInteger = (parseInt(totalTracks, 10))
 
-            getMBartistID(albumArtistURI)
-           .then(mbArtistID => console.log(mbArtistID))
-
-          //console.log(curTrackInteger + " (integer) vs  (original)" + curTrack);
-          var mbURL1 = `http://musicbrainz.org/ws/2/artist/?&fmt=json&limit=1&query=artist:${albumArtistURI}`;
-          fetch(mbURL1).then(response => { // fetch 1
-            return response.json();
-          }).then(data => {
-            //console.log(data);
-            //this just gets the artist id from the artist search string
-            var mbArtistID = data["artists"][0].id
-            var url2 = `http://musicbrainz.org/ws/2/release-group/?query=release:${cleanAlbumURI}+AND+arid:${mbArtistID}+AND+primarytype:${release_type}+AND+status:official&inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json`; //?inc=url-rels&fmt=json/
-            console.log("RG search:" + url2)
-            return fetch(url2) // fetch 2
+          getMBartistID(albumArtistURI)
+          .then(mbArtistID =>{
+            var url= `http://musicbrainz.org/ws/2/release-group/?query=release:${cleanAlbumURI}+AND+arid:${mbArtistID}+AND+primarytype:${release_type}+AND+status:official&inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json`
+            return fetch(url)
           }).then(response => {
-            console.log("release group data found")
+            //console.log("release group data found")
             return response.json();
           }).then(releaseData => {
-            console.log(releaseData);
+            //console.log(releaseData);
             releaseGroups = releaseData["release-groups"][0].releases
             releaseGroupID = releaseData["release-groups"][0].id
-
             var releaseGroupIDurl = "https://musicbrainz.org/release-group/" + releaseGroupID;
             document.getElementById("rg_id").href = releaseGroupIDurl;
-
             //console.log(releaseGroups);
             var filtered = releaseGroups.filter(a => a.status == "Official");
-            console.log(filtered);
+            //console.log(filtered);
             var releaseID = filtered[0].id
             var url3 = `https://musicbrainz.org/ws/2/release/${releaseID}?inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json&limit=3`;
             return fetch(url3) // fetch 3
           }).then(response => {
             return response.json();
           }).then(releaseData => {
-            console.log(releaseData);
+            //console.log(releaseData);
             credits_all = releaseData["media"][0]["tracks"]
             credits_track = releaseData["media"][0]["tracks"][curTrackInteger]["recording"].relations
             //console.log(credits_track);
@@ -412,6 +402,21 @@ function loopForever() {
             $('#score').html(items.join('\n'));
           }
 
+          // some search string replacements  - not complete or comprehensive
+          var albumFixed = albumSong.replace(/\(Deluxe(.*)/g, '')
+            .replace(/\(Deluxe(.*)/g, '')
+            .replace(/\[Deluxe(.*)/g, '')
+            .replace(/\(Remastered(.*)/g, '')
+            .replace(/\[Remastered(.*)/g, '')
+            .replace(/\Remastered Version(.*)/g, '')
+            .replace(/\(Super(.*)/g, '');
+          //console.log("This is ALBUM search string FIXED " + albumFixed);
+
+          var songFixed = titleSong.replace(/\(Deluxe(.*)/g, '')
+            .replace(/\- Remastered(.*)/g, '')
+            .replace(/\(Super(.*)/g, '');
+          //console.log("This is TRACK search string FIXED " + songFixed);
+          // some search string replacements  - not complete or comprehensive
           var str2 = " (album) by ";
           var str3 = albumArtist;
           var str1 = cleanAlbum;
@@ -421,7 +426,7 @@ function loopForever() {
           var wikiSearch = encodeURIComponent(res2);
           //console.log("This is ALBUM search string to Wikipedia " + wikiSearch);
           var url = `https://en.wikipedia.org/w/api.php?action=query&list=search&prop=info&inprop=url&utf8=&format=json&origin=*&srlimit=3&srsearch=${wikiSearch}&origin=*`;
-          console.log("This should be the ALBUM search URL to Wikipedia: " + url);
+          //console.log("This should be the ALBUM search URL to Wikipedia: " + url);
           fetch(url)
             .then(function(response) {
               return response.json();
@@ -431,17 +436,38 @@ function loopForever() {
               let wikiTitle = json.query.search[0].title;
               let wikiPageId = json.query.search[0].pageid;
               var wikiUrl = encodeURIComponent(wikiTitle);
-              
-              wikiAsyncFetch(wikiTitle)
-              .then(myJSONparsed => document.getElementById("albumInfo").innerHTML = myJSONparsed)
-              .catch(reason => console.log(reason.message))
-            });
+
+
+              //console.log(wikiUrl);
+            //console.log(wikiPageId);
+              // Wikipedia Search 2: Get actual album article
+              var url2 = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${wikiUrl}&origin=*`;
+              //console.log("this the album page from wikipedia " +url2)
+              fetch(url2)
+                .then(blob => blob.json())
+                .then(data => {
+                  // Work with JSON data here
+                  //console.table(data);
+                  var myJSON = JSON.stringify(data["query"]["pages"][wikiPageId].extract);
+                  //  var myJSONfixed = JSON.stringify(myJson);
+                  var myJSONparsed = JSON.parse(myJSON)
+                  document.getElementById("albumInfo").innerHTML = myJSONparsed;
+                  //return data;
+                })
+                .catch(e => {
+                  return e;
+                  //console.log("noAlbumInfo");
+                  var noAlbumInfo = ("Server overloaded OR no information found");
+                  $("#albumInfo").text(noAlbumInfo);
+                });
+
+            }); // title search wiki ends here
 
           // lyrics block
-          var lyricsArtist = encodeURI(albumArtist);
-          var lyricsTrack = encodeURI(songFixed);
-          var urlSearchLyrics = `https://api.lyrics.ovh/v1/${lyricsArtist}/${cleanTitleSong}`
-          var GoogleLyricsSearch = `https://www.google.com/search?q=${lyricsArtist}+-+${cleanTitleSong}+lyrics`
+          var lyricsArtist = encodeURIComponent(albumArtist);
+          var lyricsTrack = encodeURIComponent(songFixed);
+          var urlSearchLyrics = `https://api.lyrics.ovh/v1/${lyricsArtist}/${lyricsTrack}`
+          var GoogleLyricsSearch = `https://www.google.com/search?q=${lyricsArtist}+-+${lyricsTrack}+lyrics`
           //console.log(urlSearchLyrics);
           fetch(urlSearchLyrics)
             .then((response) => {
@@ -457,7 +483,7 @@ function loopForever() {
                 .replace(/\"/g, '');
 
               $("#song-lyrics").html(myJSON);
-              ////console.log(myJSONparsed);
+              //console.log(myJSONparsed);
               document.getElementById("song-lyrics").innerHTML = myJSONedit;
             })
             .catch(e => {
@@ -532,7 +558,6 @@ function loopForever() {
       document.getElementById("lastfm_album").href = lastfm_album;
 
 
-      /// playback section
 
       function Pause() {
         spotifyApi.pause();

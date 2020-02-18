@@ -412,21 +412,6 @@ function loopForever() {
             $('#score').html(items.join('\n'));
           }
 
-          // some search string replacements  - not complete or comprehensive
-          var albumFixed = albumSong.replace(/\(Deluxe(.*)/g, '')
-            .replace(/\(Deluxe(.*)/g, '')
-            .replace(/\[Deluxe(.*)/g, '')
-            .replace(/\(Remastered(.*)/g, '')
-            .replace(/\[Remastered(.*)/g, '')
-            .replace(/\Remastered Version(.*)/g, '')
-            .replace(/\(Super(.*)/g, '');
-          //console.log("This is ALBUM search string FIXED " + albumFixed);
-
-          var songFixed = titleSong.replace(/\(Deluxe(.*)/g, '')
-            .replace(/\- Remastered(.*)/g, '')
-            .replace(/\(Super(.*)/g, '');
-          //console.log("This is TRACK search string FIXED " + songFixed);
-          // some search string replacements  - not complete or comprehensive
           var str2 = " (album) by ";
           var str3 = albumArtist;
           var str1 = cleanAlbum;
@@ -446,32 +431,11 @@ function loopForever() {
               let wikiTitle = json.query.search[0].title;
               let wikiPageId = json.query.search[0].pageid;
               var wikiUrl = encodeURIComponent(wikiTitle);
-
-
-              //console.log(wikiUrl);
-            //console.log(wikiPageId);
-              // Wikipedia Search 2: Get actual album article
-              var url2 = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${wikiUrl}&origin=*`;
-              //console.log("this the album page from wikipedia " +url2)
-              fetch(url2)
-                .then(blob => blob.json())
-                .then(data => {
-                  // Work with JSON data here
-                  //console.table(data);
-                  var myJSON = JSON.stringify(data["query"]["pages"][wikiPageId].extract);
-                  //  var myJSONfixed = JSON.stringify(myJson);
-                  var myJSONparsed = JSON.parse(myJSON)
-                  document.getElementById("albumInfo").innerHTML = myJSONparsed;
-                  //return data;
-                })
-                .catch(e => {
-                  return e;
-                  //console.log("noAlbumInfo");
-                  var noAlbumInfo = ("Server overloaded OR no information found");
-                  $("#albumInfo").text(noAlbumInfo);
-                });
-
-            }); // title search wiki ends here
+              
+              wikiAsyncFetch(wikiTitle)
+              .then(myJSONparsed => document.getElementById("albumInfo").innerHTML = myJSONparsed)
+              .catch(reason => console.log(reason.message))
+            });
 
           // lyrics block
           var lyricsArtist = encodeURI(albumArtist);

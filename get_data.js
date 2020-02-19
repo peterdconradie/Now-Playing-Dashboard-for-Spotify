@@ -106,8 +106,6 @@ function loopForever() {
   }
 
 
-
-
   // When given the exact page title, this function fetches an extract of the page
   async function wikiAsyncFetch(pageName) {
     var url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=${pageName}&origin=*`
@@ -121,6 +119,65 @@ function loopForever() {
     var myJSONparsed = JSON.parse(myJSON)
     //console.log(myJSONparsed)
     return myJSONparsed;
+  }
+
+  // gets the release group from MB
+  async function getReleaseGroupID(mbArtistID, cleanAlbumURI, release_type) {
+    var url =
+      `http://musicbrainz.org/ws/2/release-group/?query=release:${cleanAlbumURI}+AND+arid:${mbArtistID}+AND+primarytype:${release_type}+AND+status:official&inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json`
+    let response = await fetch(url)
+    let data = await response.json()
+    let releaseGroupID = data["release-groups"][0].id
+    return releaseGroupID
+  }
+  /// gets an original release, preferably no LPS
+  async function getOfficialReleaseID(releaseGroupID) {
+    var url = `https://musicbrainz.org/ws/2/release-group/${releaseGroupID}?inc=aliases+artist-credits+releases+url-rels&fmt=json`
+    let response = await fetch(url)
+    let data = await response.json()
+    var subset = data.releases;
+    var filter1 = subset.filter(a => a.status == "Official"); // first get only offical results
+    var filter2 = filter1.filter(a => a.packaging !== "Cardboard/Paper Sleeve"); // try to remove all LPs, this isn't always possible because MB doesn't offer format information when browsing releaseGroups
+    let releaseID = filter2[0].id
+    return releaseID
+  }
+
+  /// gets album wikidata information about the album
+  async function getAlbumWikiData(releaseGroupID) {
+    var url = `https://musicbrainz.org/ws/2/release-group/${releaseGroupID}?inc=aliases+artist-credits+releases+url-rels&fmt=json`
+    let response = await fetch(url)
+    let data = await response.json()
+    console.log(data)
+    var subset = data.relations;
+    var filtered = subset.filter(a => a.type == "wikidata");
+    if (filtered.length == 0) {
+
+      var str2 = "(album) by ";
+      var str3 = albumArtist;
+      var str1 = cleanAlbum;
+      var res = str1.concat(str2);
+      var res2 = res.concat(str3);
+      var wikiSearch = encodeURIComponent(res2);
+      searchWiki(wikiSearch)
+         .then(pagename => wikiAsyncFetch(pagename)
+          .then(myJSONparsed => document.getElementById("albumInfo").innerHTML = myJSONparsed))
+
+    } else {
+      console.log("Wikidata resource found");
+      var WikiDataURL = filtered[0]["url"]["resource"]
+      var WikiDataURLFixed = WikiDataURL.replace('https:\/\/www.wikidata.org\/wiki\/', '');
+      console.log(WikiDataURLFixed);
+      return (WikiDataURLFixed)
+    }
+  }
+
+  // uses the current track number and the release ID to get the track credits
+  async function getCredits(releaseID, curTrackInteger) {
+    var url = `https://musicbrainz.org/ws/2/release/${releaseID}?inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json&limit=3`
+    let response = await fetch(url)
+    let data = await response.json()
+    let credits_track = data["media"][0]["tracks"][curTrackInteger]["recording"].relations
+    return credits_track
   }
 
   setInterval(function() {
@@ -294,91 +351,67 @@ function loopForever() {
           cleanTitleSong = cleanTitles(titleSong);
           cleanTitleSongURI = encodeURI(cleanTitleSong);
 
-          //console.log("Song title should be " + titleSong)
-          //console.log("Song clean should" + cleanTitleSong)
-          //console.log("Song changed: " + titleSong + " by " + albumArtist + " on the album " + albumSong)
-          //console.log("Song cleaned: " + cleanTitleSong + " by " + albumArtist + " on the album " + cleanAlbum);
-
           var curTrackInteger = (parseInt(curTrack, 10) - 1);
           var totalTracksInteger = (parseInt(totalTracks, 10))
 
 
-          getMBartistID(albumArtistURI)
-            .then(mbArtistID => {
-              var url = `http://musicbrainz.org/ws/2/release-group/?query=release:${cleanAlbumURI}+AND+arid:${mbArtistID}+AND+primarytype:${release_type}+AND+status:official&inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json`
-              return fetch(url)
-            }).then(response => {
-              //console.log("release group data found")
-              return response.json();
-            }).then(releaseData => {
-              console.log(releaseData);
-              releaseGroups = releaseData["release-groups"][0].releases
-              releaseGroupID = releaseData["release-groups"][0].id
-              var releaseGroupIDurl = "https://musicbrainz.org/release-group/" + releaseGroupID;
-              document.getElementById("rg_id").href = releaseGroupIDurl;
-              //console.log(getElementById);
-              var filtered = releaseGroups.filter(a => a.status == "Official");
-              //console.log(filtered);
-              var releaseID = filtered[0].id
-              var url3 = `https://musicbrainz.org/ws/2/release/${releaseID}?inc=recordings+recording-level-rels+work-rels+work-level-rels+artist-rels&fmt=json&limit=3`;
-              return fetch(url3) // fetch 3
-            }).then(response => {
-              return response.json();
-            }).then(releaseData => {
-              //console.log(releaseData);
-              credits_all = releaseData["media"][0]["tracks"]
-              credits_track = releaseData["media"][0]["tracks"][curTrackInteger]["recording"].relations
-              //console.log(credits_track);
+          // takes the track credits and formats it for the table in the song credits
+          function fillCredits(credits_track) {
+            console.log(credits_track)
+            if (credits_track.length == 0) {
+              const tmpl = () => ``;
+              contributionsTemplate.innerHTML = tmpl();
+            } else {
+              //console.log("credits")
+              var i = 1;
+              var creditName;
+              var creditNames = [];
 
-              if (credits_track.length == 0) {
-                const tmpl = () => ``;
-                contributionsTemplate.innerHTML = tmpl();
-              } else {
-                //console.log("credits")
-                var i = 1;
-                var creditName;
-                var creditNames = [];
+              var creditType;
+              var creditTypes = [];
 
-                var creditType;
-                var creditTypes = [];
+              var creditAttribute;
+              var creditAttributes = [];
 
-                var creditAttribute;
-                var creditAttributes = [];
+              var creditURI;
+              var creditURIs = [];
 
-                var creditURI;
-                var creditURIs = [];
+              //console.log("Credits below");
+              for (let i = 0, l = credits_track.length; i < l; i++) {
 
-                //console.log("Credits below");
-                for (let i = 0, l = credits_track.length; i < l; i++) {
+                creditName = credits_track[i]["artist"]?.name
+                creditNames.push(creditName);
 
-                  creditName = credits_track[i]["artist"]?.name
-                  creditNames.push(creditName);
+                creditURI = credits_track[i].artist?.id
+                creditURIs.push(creditURI);
 
-                  creditURI = credits_track[i].artist?.id
-                  creditURIs.push(creditURI);
+                creditAttribute = credits_track[i].attributes
+                creditAttributes.push(creditAttribute);
 
-                  creditAttribute = credits_track[i].attributes
-                  creditAttributes.push(creditAttribute);
+                creditType = credits_track[i].type
+                creditTypes.push(creditType);
 
-                  creditType = credits_track[i].type
-                  creditTypes.push(creditType);
-
-                  //console.log(creditURI);
-                }
-                const tmpl = (creditNames, creditAttributes, creditTypes, creditURIs) => `
-              <h4>Song Credits</h4>
-              <table><thead>
-              <tr><th>Artist<th>Contribution<th>Detail<tbody>
-              ${creditNames.map( (cell, index) => `
-                  <tr><td><a href ="https://musicbrainz.org/artist/${creditURIs[index]}" target="_blank">${cell}<a>
-                  <td>${creditAttributes[index]}<td>${creditTypes[index]}</tr>
-              `).join('')}
-              </table>`;
-                contributionsTemplate.innerHTML = tmpl(creditNames, creditTypes, creditAttributes, creditURIs);
+                //console.log(creditURI);
               }
-            }).catch(err => {
-              //console.error(err);
-            });
+              const tmpl = (creditNames, creditAttributes, creditTypes, creditURIs) => `
+            <h4>Song Credits</h4>
+            <table><thead>
+            <tr><th>Artist<th>Contribution<th>Detail<tbody>
+            ${creditNames.map( (cell, index) => `
+                <tr><td><a href ="https://musicbrainz.org/artist/${creditURIs[index]}" target="_blank">${cell}<a>
+                <td>${creditAttributes[index]}<td>${creditTypes[index]}</tr>
+            `).join('')}
+            </table>`;
+              contributionsTemplate.innerHTML = tmpl(creditNames, creditTypes, creditAttributes, creditURIs);
+            }
+          }
+
+
+          getMBartistID(albumArtistURI)
+            .then(mbArtistID => getReleaseGroupID(mbArtistID, cleanAlbumURI, release_type))
+            .then(releaseGroupID => getOfficialReleaseID(releaseGroupID))
+            .then(releaseID => getCredits(releaseID, curTrackInteger))
+            .then(credits_track => fillCredits(credits_track))
 
           // this whole chain first fetches an artistID, checks for wikidatacode, gets the title from the wikidata code and then grabs the extract
           getMBartistID(albumArtistURI)
@@ -387,6 +420,26 @@ function loopForever() {
               .then(titleEncode => wikiAsyncFetch(titleEncode)
                 .then(myJSONparsed => document.getElementById("artistInfo").innerHTML = myJSONparsed))
             )
+
+          getMBartistID(albumArtistURI)
+            .then(mbArtistID => getReleaseGroupID(mbArtistID, cleanAlbumURI, release_type))
+            .then(releaseGroupID => getAlbumWikiData(releaseGroupID))
+            .then(artistWikiDataURLFixed => getWikiTitle(artistWikiDataURLFixed))
+            .then(titleEncode => wikiAsyncFetch(titleEncode)
+              .then(myJSONparsed => document.getElementById("albumInfo").innerHTML = myJSONparsed))
+
+          getMBartistID(albumArtistURI)
+            .then(mbArtistID => artistIDuri = "https://musicbrainz.org/artist/" + mbArtistID)
+            .then(artistIDuri => document.getElementById("artist_id").href = artistIDuri)
+
+          // create a reusable artist ID variable
+          getMBartistID(albumArtistURI)
+            .then(mbArtistID => mbArtistIDg = mbArtistID);
+
+          getReleaseGroupID(mbArtistIDg, cleanAlbumURI, release_type)
+            .then(releaseGroupID => rg_id = "https://musicbrainz.org/release-group/" + releaseGroupID)
+            .then(rg_id => document.getElementById("rg_id").href = rg_id)
+
           trackPopularityIcon = Math.ceil(trackPopularity / 20);
           // this checks is the popularity is higher than 0. if it is zero, one star gets added, if not, the else loop is run
           if (trackPopularityIcon == 0) {
@@ -407,16 +460,8 @@ function loopForever() {
 
 
           // prepares a string to be searched on wikipedia, in this case for albums
-          var str2 = "(album) by ";
-          var str3 = albumArtist;
-          var str1 = cleanAlbum;
-          var res = str1.concat(str2);
-          var res2 = res.concat(str3);
-          var wikiSearch = encodeURIComponent(res2);
 
-          searchWiki(wikiSearch)
-            .then(pagename => wikiAsyncFetch(pagename)
-              .then(myJSONparsed => document.getElementById("albumInfo").innerHTML = myJSONparsed))
+
 
 
 

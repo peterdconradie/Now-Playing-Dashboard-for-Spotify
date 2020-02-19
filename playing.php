@@ -56,12 +56,12 @@ switch ($_COOKIE['lang'])
     <i class="material-icons" style="font-size:12px;">star</i>
     </div>
 
-    <h4><i class="material-icons"style="font-size:12px;">mic</i> External links artist</h4>
+    <h4><i class="material-icons inline";">mic</i>External links artist</h4>
     <p><a id="aoty" href="https://www.albumoftheyear.org/releases/" target="_blank">AOTY</a></p>
     <p><a id="allmusic" href="http://www.allmusic.com" target="_blank">Allmusic</a></p>
     <p><a id="lastfm" href="http://www.last.fm" target="_blank">Last.fm</a></p>
 
-    <h4><i class="material-icons" style="font-size:12px;">album</i> External links album</h4>
+    <h4><i class="material-icons inline">album</i>External links album</h4>
     <p><a id="aoty_album" href="https://www.albumoftheyear.org/releases/" target="_blank">AOTY</a></p>
     <p><a id="allmusic_album" href="http://www.allmusic.com" target="_blank">Allmusic</a></p>
     <p><a id="lastfm_album" href="http://www.last.fm" target="_blank">Last.fm</a></p>
@@ -82,9 +82,11 @@ switch ($_COOKIE['lang'])
       <h3 id="song-album"></h3>
       <h4>Album information</h4>
       <p id="albumInfo">No album info found</p>
-      <p><a id="rg_id" href="https://musicbrainz.org/" target="_blank">See album info on MusicBrainz</a></p>
+
+      <p><a id="rg_id" href="https://musicbrainz.org/" target="_blank"><i class="material-icons inline">launch</i></a></p>
       <h4>Artist information</h4>
       <p id="artistInfo">No artist info found</p>
+      <p><a id="artist_id" href="https://musicbrainz.org/" target="_blank"><i class="material-icons inline">launch</i></a></p>
     </div>
     <div id="right-side">
       <div id="artistArt"><img src="no_artist.png" id="artist-image"></div>

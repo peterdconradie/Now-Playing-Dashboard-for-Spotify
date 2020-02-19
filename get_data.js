@@ -128,6 +128,9 @@ function loopForever() {
     let response = await fetch(url)
     let data = await response.json()
     let releaseGroupID = data["release-groups"][0].id
+    console.log("releaseGroupID "+ releaseGroupID) //xxx
+    rg_id = "https://musicbrainz.org/release-group/" + releaseGroupID
+    document.getElementById("rg_id").href = rg_id
     return releaseGroupID
   }
   /// gets an original release, preferably no LPS
@@ -160,7 +163,8 @@ function loopForever() {
       var wikiSearch = encodeURIComponent(res2);
       searchWiki(wikiSearch)
          .then(pagename => wikiAsyncFetch(pagename)
-          .then(myJSONparsed => document.getElementById("albumInfo").innerHTML = myJSONparsed))
+         .then(myJSONparsed => document.getElementById("albumInfo").innerHTML = myJSONparsed))
+
 
     } else {
       console.log("Wikidata resource found");
@@ -435,11 +439,6 @@ function loopForever() {
           // create a reusable artist ID variable
           getMBartistID(albumArtistURI)
             .then(mbArtistID => mbArtistIDg = mbArtistID);
-
-          getReleaseGroupID(mbArtistIDg, cleanAlbumURI, release_type)
-            .then(releaseGroupID => rg_id = "https://musicbrainz.org/release-group/" + releaseGroupID)
-            .then(rg_id => document.getElementById("rg_id").href = rg_id)
-
           trackPopularityIcon = Math.ceil(trackPopularity / 20);
           // this checks is the popularity is higher than 0. if it is zero, one star gets added, if not, the else loop is run
           if (trackPopularityIcon == 0) {

@@ -9,7 +9,7 @@ This is a dashboard for Spotify that fetches data from https://api.lyrics.ovh/, 
 ![Screenshot Dark](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/blob/master/screenshot-dark.png)
 
 
-Most recent release: v0.1
+Most recent release: v0.2
 ## **Known Issues**
 - Wikipedia search sometimes results in the same text for both albums and artists. This happens with lesser known artists.
 - Musicbrainz doesn't always have a Wikidata identifier associated with an artist, in which case the artist info box does not get populated.

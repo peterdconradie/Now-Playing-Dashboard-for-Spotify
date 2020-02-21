@@ -5,14 +5,20 @@
 
 This is a dashboard for Spotify that fetches data from https://api.lyrics.ovh/, Wikipedia, MusicBrainz and Spotify about what you are currently listening to.
 
-![Screenshot](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/blob/master/screenshot.png)
+![Screenshot Light](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/blob/master/screenshot-light.png)
+![Screenshot Dark](https://github.com/peterdconradie/Now-Playing-Dashboard-for-Spotify/blob/master/screenshot-dark.png)
+
 
 Most recent release: v0.1
 ## **Known Issues**
 - Wikipedia search sometimes results in the same text for both albums and artists. This happens with lesser known artists.
 - Musicbrainz doesn't always have a Wikidata identifier associated with an artist, in which case the artist info box does not get populated.
+- Musicbrainz doesn't always find an album (or it isn't in the MB database)
 
 ## **Changelog**
+v0.2
+- Added light mode
+- JSON fetch improvements
 
 v0.1
 - Ability to fetch album song info from Wikipedia

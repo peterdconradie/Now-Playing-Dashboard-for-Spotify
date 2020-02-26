@@ -1,3 +1,12 @@
+/* DARK THEME  */
+/* Accent: 1DB954 */
+/* Headers: FFFFFF */
+/* Text: B6B6C0 */
+/* Background: 131313 */
+/* Footer: 1A1A1A*/
+
+
+
 html, body {
   height: 99%;
   background-color: #131313;
@@ -5,15 +14,8 @@ html, body {
   margin-top: 0px;
   margin-left: 0px;
   overflow: hidden;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
-
-/* accent colors 1DB954 */
-/* Header /  colors   FFFFFF */
-/* Text colors  B6B6C0 */
-/* background color 131313
-/* Footer color 1A1A1A*/
-/* get opposites here */
 
 h1, h2, h3, h4 {
   color: #FFFFFF;

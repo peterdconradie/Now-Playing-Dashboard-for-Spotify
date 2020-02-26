@@ -1,3 +1,10 @@
+/* LIGHT THEME  */
+/* Accent: 1DB954 */
+/* Headers:  000000 */
+/* Text: 49493F */
+/* Background: ECECEC
+/* Footer: E5E5E5*/
+
 html, body {
   height: 99%;
   background-color: #ECECEC;
@@ -5,15 +12,8 @@ html, body {
   margin-top: 0px;
   margin-left: 0px;
   overflow: hidden;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
-
-/* accent colors 1DB954 */
-/* Header /  colors   000000 */
-/* Text colors  49493F */
-/* background color ECECEC
-/* Footer color E5E5E5*/
-/* get opposites here */
 
 h1, h2, h3, h4 {
   color: #000000;
@@ -102,7 +102,7 @@ p {
 }
 
 .loading{
-  width: 40px;
+  width: 20px;
 }
 
 #album-image {
@@ -204,10 +204,11 @@ p {
   font-size: 12px;
   padding-left: 1px;
   padding-bottom: 50px;
+  font-weight: 400;
 }
 
 #left-side h4 {
-  font-size: 12px;
+  font-size: 13px;
   padding-left: 0px;
   margin-bottom: 0px;
   padding-left: 1px;

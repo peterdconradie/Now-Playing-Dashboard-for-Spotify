@@ -61,7 +61,7 @@ switch ($_COOKIE['lang'])
     <p id="total-album-tracks"></p>
     <h4>Artist genre:</h4>
     <p id="artist-genres"></p>
-    <div id="contributionsTemplate"><p></p></div>
+    <div id="credtisFill"><p id="nocredits"></p></div>
     </div>
 
     <div id="main">
@@ -69,11 +69,11 @@ switch ($_COOKIE['lang'])
       <h3 id="song-album"></h3>
       <h4>Album information</h4>
       <p id="albumInfo"><img class="loading" src="images/searching.gif"></p>
-
+      <p id="albumSource"></p>
       <p><a id="rg_id" href="https://musicbrainz.org/" target="_blank"><i class="material-icons inline">launch</i></a></p>
       <h4>Artist information</h4>
       <p id="artistInfo"><img class="loading" src="images/searching.gif"></p>
-
+      <p id="artistSource"></p>
       <p><a id="artist_id" href="https://musicbrainz.org/" target="_blank"><i class="material-icons inline">launch</i></a></p>
     </div>
     <div id="right-side">

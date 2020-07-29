@@ -11,6 +11,7 @@ if (readCookie('theme') == "test") {
 }
 
 
+
 // declare all variables
 let result;
 let response;

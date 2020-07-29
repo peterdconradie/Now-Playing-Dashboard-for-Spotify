@@ -1,5 +1,5 @@
 /* DARK THEME  */
-/* Accent: 1DB954 */
+/* Accent: ffa500 */
 /* Headers: FFFFFF */
 /* Text: B6B6C0 */
 /* Background: 131313 */
@@ -32,7 +32,7 @@ h2 {
   margin-bottom: 5px;
   margin-top: 0px;
   font-size: 24px;
-  border-top: 1px solid #1DB954;
+  border-top: 1px solid #ffa500;
   padding-top: 5px;
   font-weight: 200;
 }
@@ -61,7 +61,7 @@ a:visited {
 
 /* mouse over link */
 a:hover {
-  color: #1DB954;
+  color: #ffa500;
 }
 
 /* selected link */
@@ -86,7 +86,7 @@ p {
 }
 
 #active.material-icons {
-  border-bottom: 2px solid #1DB954;
+  border-bottom: 2px solid #ffa500;
 }
 
 .material-icons.inline {
@@ -110,7 +110,7 @@ p {
 #album-image {
   float: left;
   overflow: hidden;
-  border-top: 1px solid #1DB954;
+  border-top: 1px solid #ffa500;
   width: 100%;
   margin-bottom: 5px;
 }
@@ -118,7 +118,7 @@ p {
 #artist-image {
   float: left;
   overflow: hidden;
-  border-top: 1px solid #1DB954;
+  border-top: 1px solid #ffa500;
   width: 100%;
   margin-bottom: 5px;
 }
@@ -166,7 +166,7 @@ p {
 }
 
 #seekbar-now {
-  background-color: #1DB954;
+  background-color: #ffa500;
   height: 1px;
 }
 
